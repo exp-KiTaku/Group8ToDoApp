@@ -1,7 +1,7 @@
 export class Category {
-  readonly id: string;
-  name: string;
-  color: string; // 要調査
+  public readonly id: string;
+  public name: string;
+  public color: string;
 
   constructor(id: string, name: string, color: string) {
     this.id = id;
@@ -9,13 +9,13 @@ export class Category {
     this.color = color;
   }
 
-  getName = () => this.name;
-
   setName(name: string): void {
+    if (name.trim() === '') {
+      throw new Error('Category name cannot be empty.');
+    }
+
     this.name = name;
   }
-
-  getColor = () => this.color;
 
   setColor(color: string): void {
     this.color = color;
