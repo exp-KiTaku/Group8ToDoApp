@@ -6,9 +6,8 @@ export interface ITask {
   title: string;
   description: string | null;
   categories: Category[];
-  status: `uncompleted` | `completed` | `deadline-passed`;
+  status: (`uncompleted` | `completed` | `deadline-passed`) | (`uncompleted` | `completed` | `deadline-passed`)[]; // 通常タスクの場合は単一の状態, 習慣タスクの場合は各子タスクの状態を配列で保持
   deadline: Date | Date[]; // 通常タスクの場合はDate, 習慣タスクの場合はDate[]を使用
-  isCompleted: boolean | boolean[]; // 完了状態
   completedAt: (Date | null) | (Date | null)[]; // 完了時刻  未完了の場合にnullを用いる
 
   // 通常タスクの場合は引数なし、習慣タスクの場合は引数にhabitIdを指定する

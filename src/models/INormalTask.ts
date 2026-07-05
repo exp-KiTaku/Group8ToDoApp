@@ -2,8 +2,8 @@ import type { ITask } from './ITask';
 import type { TaskArgs } from './TaskArgs';
 
 export interface INormalTask extends ITask {
+  status: `uncompleted` | `completed` | `deadline-passed`;
   deadline: Date;
-  isCompleted: boolean;
   completedAt: Date | null;
 
   getArgs(): TaskArgs;

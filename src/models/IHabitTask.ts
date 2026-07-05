@@ -3,8 +3,8 @@ import type { TaskArgs } from './TaskArgs';
 
 export interface IHabitTask extends ITask {
   habitId: string[]; // 各タスクの識別用ID 必ず1以上存在させる インデックスはhabitIdの順番に対応する
+  status: (`uncompleted` | `completed` | `deadline-passed`)[]; // 各子タスクの状態を配列で保持
   deadline: Date[];
-  isCompleted: boolean[];
   completedAt: (Date | null)[];
   intervalDays: number;
 
