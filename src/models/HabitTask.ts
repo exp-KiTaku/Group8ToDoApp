@@ -11,7 +11,6 @@ export class HabitTask implements IHabitTask {
   public status: ('uncompleted' | 'completed' | 'deadline-passed')[];
   public deadline: Date[];
   public completedAt: (Date | null)[];
-
   public intervalDays: number;
 
   constructor(args: TaskArgs) {
@@ -104,34 +103,6 @@ export class HabitTask implements IHabitTask {
     this.title = title;
     this.description = description;
     this.categories = [...categories];
-  }
-
-  /**
-   * タスク情報を表示用にフォーマットして返す
-   */
-  display(): string {
-    const categoryNames = this.categories.map((c) => c.name).join(', ');
-    let result =
-      `[HabitTask] ${this.title}\n` +
-      `  ID: ${this.id}\n` +
-      `  説明: ${this.description ?? 'なし'}\n` +
-      `  カテゴリー: ${categoryNames || 'なし'}\n` +
-      `  繰り返し間隔: ${this.intervalDays}日\n` +
-      `  履歴:\n`;
-
-    for (let i = 0; i < this.habitId.length; i++) {
-      const completedAtValue = this.completedAt[i];
-      const completedAtStr = completedAtValue
-        ? completedAtValue.toLocaleString()
-        : '未完了';
-      result +=
-        `    [${i + 1}] habitId: ${this.habitId[i]}\n` +
-        `        状態: ${this.status[i]}\n` +
-        `        期限: ${this.deadline[i].toLocaleString()}\n` +
-        `        完了日時: ${completedAtStr}\n`;
-    }
-
-    return result;
   }
 
   /**

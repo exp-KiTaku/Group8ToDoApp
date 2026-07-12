@@ -7,7 +7,6 @@ export class NormalTask implements INormalTask {
   public title: string;
   public description: string | null;
   public categories: Category[];
-  public isCompleted: boolean;
   public status: 'uncompleted' | 'completed' | 'deadline-passed';
   public deadline: Date;
   public completedAt: Date | null;
@@ -22,7 +21,6 @@ export class NormalTask implements INormalTask {
     this.title = args.title;
     this.description = args.description;
     this.categories = [...args.categories];
-    this.isCompleted = args.status === 'completed';
     this.status = args.status;
     this.deadline = new Date(args.deadline);
     this.completedAt = args.completedAt ? new Date(args.completedAt) : null;
@@ -52,7 +50,6 @@ export class NormalTask implements INormalTask {
     this.description = args.description;
     this.categories = [...args.categories];
     this.status = args.status;
-    this.isCompleted = args.status === 'completed';
     this.deadline = new Date(args.deadline);
     this.completedAt = args.completedAt ? new Date(args.completedAt) : null;
   }
@@ -66,22 +63,6 @@ export class NormalTask implements INormalTask {
     this.categories = [...categories];
   }
 
-  /**
-   * タスク情報を表示用にフォーマットして返す
-   */
-  display(): string {
-    const categoryNames = this.categories.map((c) => c.name).join(', ');
-    const completedAtStr = this.completedAt ? this.completedAt.toLocaleString() : '未完了';
-    return (
-      `[NormalTask] ${this.title}\n` +
-      `  ID: ${this.id}\n` +
-      `  説明: ${this.description ?? 'なし'}\n` +
-      `  カテゴリー: ${categoryNames || 'なし'}\n` +
-      `  状態: ${this.status}\n` +
-      `  期限: ${this.deadline.toLocaleString()}\n` +
-      `  完了日時: ${completedAtStr}`
-    );
-  }
 
   /**
    * リマインダー機能のプレースホルダー
@@ -94,7 +75,6 @@ export class NormalTask implements INormalTask {
    * タスクを完了状態にし、完了日時を記録する
    */
   complete(): void {
-    this.isCompleted = true;
     this.status = 'completed';
     this.completedAt = new Date();
   }
@@ -103,7 +83,6 @@ export class NormalTask implements INormalTask {
    * タスクの完了状態を取り消し、完了日時をリセットする
    */
   uncomplete(): void {
-    this.isCompleted = false;
     this.status = 'uncompleted';
     this.completedAt = null;
   }
