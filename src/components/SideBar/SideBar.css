@@ -1,0 +1,82 @@
+/* src/components/SideBar.css */
+.sidebar {
+/* 固定のための設定 */
+  position: sticky;
+  top: 0;
+  
+  width: 400px; /* お好みの幅 */
+  height: 100vh; /* 画面いっぱいの高さ */
+  background-color: #1e1e1e;
+  border-left: 1px solid #333;
+  padding: 20px;
+  
+  /* 内部をスクロールさせるための設定 */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* 縦方向のオーバーフローを許可 */
+}
+
+.sidebar-resizer {
+  position: absolute;
+  left: -8px;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  cursor: ew-resize;
+  z-index: 10;
+}
+
+.sidebar-resizer::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.sidebar-resizer {
+  position: absolute;
+  left: -8px;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  cursor: ew-resize;
+}
+
+.sidebar-section {
+  padding: 10px;
+}
+
+/* 各エリアのスタイル調整 */
+.task-title {
+  margin: 0 0 10px 0;
+  color: #ffffff;
+}
+
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 20px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.calendar-placeholder {
+  height: 250px;
+  border: 1px dashed #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+}
