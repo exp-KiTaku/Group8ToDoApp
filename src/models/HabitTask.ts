@@ -14,16 +14,15 @@ export class HabitTask implements IHabitTask {
   public intervalDays: number;
 
   constructor(args: TaskArgs) {
-    // 期限日時が過去の場合は例外をスロー
-    if (args.deadline.getTime() < Date.now()) {
-      throw new Error('期限日時に過去の時刻を設定することはできません。');
-    }
-
     if (args.intervalDays === undefined || args.intervalDays <= 0) {
       throw new Error('習慣タスクには正の intervalDays が必要です。');
     }
 
-    this.id = args.id ?? crypto.randomUUID();
+    if (!args.id) {
+      args.id = crypto.randomUUID();
+    }
+
+    this.id = args.id;
     this.title = args.title;
     this.description = args.description;
     this.categories = [...args.categories];
@@ -67,6 +66,10 @@ export class HabitTask implements IHabitTask {
    * インデックスを指定して TaskArgs を構築する
    */
   private buildArgs(index: number): TaskArgs {
+    if (index < 0 || index >= this.habitId.length) {
+      throw new Error(`インデックス ${index} は habitId 配列の範囲外です（長さ: ${this.habitId.length}）。`);
+    }
+
     return {
       id: this.id,
       type: 'habit',
@@ -96,39 +99,16 @@ export class HabitTask implements IHabitTask {
     }
   }
 
-  /**
-   * タスクの内容（タイトル、説明、カテゴリーなど）を編集・更新する
-   */
-  editTask(title: string, description: string | null, categories: Category[]): void {
-    this.title = title;
-    this.description = description;
-    this.categories = [...categories];
-  }
-
-  /**
-   * リマインダー機能のプレースホルダー
-   */
-  remind(): void {
-    const lastIndex = this.habitId.length - 1;
-    console.log(
-      `[リマインダー] 習慣タスク「${this.title}」の次の期限は ${this.deadline[lastIndex].toLocaleString()} です。`
-    );
-  }
 
   /**
    * 指定した habitId の子タスクを完了状態にする。
-   * 末尾の未完了タスクの場合のみ、次回タスクを自動生成する。
+   * 完了処理のみを行い、次回タスクの生成はService側の責務とする。
    */
   complete(habitId: string): void {
     const index = this.getIndex(habitId);
 
     this.status[index] = 'completed';
     this.completedAt[index] = new Date();
-
-    // 末尾の未完了タスクを完了した場合のみ、次回タスクを生成
-    if (index === this.habitId.length - 1) {
-      this.append();
-    }
   }
 
   /**
@@ -160,14 +140,14 @@ export class HabitTask implements IHabitTask {
   }
 
   /**
-   * 末尾のdeadlineを基準に intervalDays を足した次回タスクを生成して配列に追加する
+   * 末尾のdeadlineを基準に intervalDays を足した次回タスクを生成して配列に追加する。
+   * IDはService側で生成して引数として渡す。
    */
-  append(): void {
+  append(newHabitId: string): void {
     const lastDeadline = this.deadline[this.deadline.length - 1];
     const nextDeadline = new Date(lastDeadline);
     nextDeadline.setDate(nextDeadline.getDate() + this.intervalDays);
 
-    const newHabitId = crypto.randomUUID();
     this.habitId.push(newHabitId);
     this.status.push('uncompleted');
     this.deadline.push(nextDeadline);
@@ -176,47 +156,18 @@ export class HabitTask implements IHabitTask {
 
   /**
    * 指定した habitId の子タスクを削除する。
-   * 削除対象が末尾の未完了タスクの場合、削除前にそのdeadlineを基準として次回タスクを生成する。
-   * スキップ履歴自体は保持しない。
+   * 純粋な削除のみを行い、次回タスクの生成はService側の責務とする。
    */
   remove(habitId: string): void {
     const index = this.getIndex(habitId);
-    const isLast = index === this.habitId.length - 1;
-    const isUncompleted = this.status[index] !== 'completed';
 
-    // 末尾の未完了タスクの場合は、削除前に次回タスクを生成
-    if (isLast && isUncompleted) {
-      // 削除対象のdeadlineを基準に次回タスクを生成
-      const targetDeadline = this.deadline[index];
-      const nextDeadline = new Date(targetDeadline);
-      nextDeadline.setDate(nextDeadline.getDate() + this.intervalDays);
-
-      const newHabitId = crypto.randomUUID();
-      this.habitId.push(newHabitId);
-      this.status.push('uncompleted');
-      this.deadline.push(nextDeadline);
-      this.completedAt.push(null);
-    }
-
-    // 対象タスクを削除
     this.habitId.splice(index, 1);
     this.status.splice(index, 1);
     this.deadline.splice(index, 1);
     this.completedAt.splice(index, 1);
   }
 
-  /**
-   * 末尾の子タスクをスキップして次の生成予定時刻に新規タスクを生成する
-   */
-  skipHabit(): void {
-    const lastIndex = this.habitId.length - 1;
-    if (lastIndex < 0) {
-      throw new Error('スキップ対象の子タスクが存在しません。');
-    }
 
-    const lastHabitId = this.habitId[lastIndex];
-    this.remove(lastHabitId);
-  }
 
   /**
    * 指定した habitId の子タスクの期限が過ぎているかどうかを判定する
