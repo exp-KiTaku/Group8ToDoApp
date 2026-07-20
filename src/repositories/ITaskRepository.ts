@@ -9,4 +9,5 @@ export interface ITaskRepository {
   createTask(task: ITask): Promise<void>;
   updateTask(task: ITask): Promise<void>; // id一致するTaskなかったら何も起きない
   deleteTask(id: string): Promise<void>;  // id一致するTaskなかったら何も起きない
+  appendHabitTask(id: string, newId: string): Promise<void>; // 既存の習慣タスク(id)に新しい子タスク(newId)を追加する
 }
