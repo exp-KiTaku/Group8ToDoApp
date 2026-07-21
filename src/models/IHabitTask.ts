@@ -15,8 +15,8 @@ export interface IHabitTask extends ITask {
   uncomplete(habitId: string): void;
   updateAllStatus(): void;
   updateStatus(habitId: string): void;
-  append(): void; // 末尾に子タスクを追加する
+  append(newHabitId: string): void; // 末尾に子タスクを追加する（IDはService側で生成して渡す）
   remove(habitId: string): void;
-  skipHabit(): void; // 末尾の子タスクを取りやめて次の生成予定時刻に生成 末尾以外に使わせないようにする？
+
   isDeadlinePassed(habitId: string): boolean;
 }
