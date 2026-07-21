@@ -13,7 +13,7 @@ export class HabitTask implements IHabitTask {
   public completedAt: (Date | null)[];
   public intervalDays: number;
 
-  constructor(args: TaskArgs) {
+  constructor(args: TaskArgs, newHabitId: string) {
     if (args.intervalDays === undefined || args.intervalDays <= 0) {
       throw new Error('習慣タスクには正の intervalDays が必要です。');
     }
@@ -29,8 +29,7 @@ export class HabitTask implements IHabitTask {
     this.intervalDays = args.intervalDays;
 
     // 初期の子タスクを1件作成（未完了状態）
-    const firstHabitId = crypto.randomUUID();
-    this.habitId = [firstHabitId];
+    this.habitId = [newHabitId];
     this.status = [args.status];
     this.deadline = [new Date(args.deadline)];
     this.completedAt = [args.completedAt ? new Date(args.completedAt) : null];
