@@ -2,6 +2,7 @@
 import React from 'react';
 import './CategoryEditWindow.css';
 
+
 type CategoryEditWindowProps = {
   isOpen: boolean;
   onClose: () => void;

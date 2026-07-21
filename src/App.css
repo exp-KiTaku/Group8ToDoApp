@@ -25,6 +25,15 @@ body {
 .main-content {
   flex: 1;
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: 12px;
 }
 
 .main-content section {
