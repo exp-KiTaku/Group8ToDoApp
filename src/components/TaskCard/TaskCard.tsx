@@ -6,6 +6,8 @@ type TaskCardProps = {
   dueDate: string;
   categoryColor: string; // カテゴリーに基づく色
   statusColor: string;  // カード全体の背景色
+
+  //ここにserviceの関数をいれるpropsがはいる
 };
 
 const TaskCard: React.FC<TaskCardProps> = ({ title, dueDate, categoryColor, statusColor }) => {

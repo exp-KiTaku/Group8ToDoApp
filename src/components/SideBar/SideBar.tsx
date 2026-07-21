@@ -1,6 +1,7 @@
 // src/components/SideBar.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import './SideBar.css';
+import CategoryCard from '../CategoryCard/CategoryCard';
 
 const MIN_WIDTH = 240;
 const MAX_WIDTH = 640;
@@ -48,8 +49,10 @@ const SideBar: React.FC = () => {
         <h2 className="task-title">Title</h2>
         <div className="task-meta">期限: 〇月〇日</div>
         <div className="task-labels">
-          <span className="label-category">カテゴリー名</span>
-          <span className="label-status">ステータス</span>
+          {/*<span className="label-category">カテゴリー名</span>
+          <span className="label-status">ステータス</span> */}
+          <CategoryCard label="仕事" color="#ff6347" />
+          <CategoryCard label="完了" color="#1eff3c" />
         </div>
         <div className="task-description">説明</div>
       </div>
