@@ -16,6 +16,22 @@ export class TaskService implements ITaskService {
     this.taskRepository = taskRepository;
   }
 
+  private sortTaskArgsByDeadline(taskArgsArray: TaskArgs[]): TaskArgs[] {
+    return taskArgsArray.sort((a, b) => a.deadline.getTime() - b.deadline.getTime());
+  }
+
+  private filterTaskByCategory(taskArray: ITask[], category: Category): ITask[] {
+    return taskArray.filter(task => task.categories.some(cat => cat.id === category.id));
+  }
+
+  private filterTaskArgsByCategory(taskArgsArray: TaskArgs[], category: Category): TaskArgs[] {
+    return taskArgsArray.filter(taskArg => taskArg.categories.some(cat => cat.id === category.id));
+  }
+
+  private filterTaskArgsByStatus(taskArgsArray: TaskArgs[], status: 'uncompleted' | 'completed' | 'deadline-passed'): TaskArgs[] {
+    return taskArgsArray.filter(taskArg => taskArg.status === status);
+  }
+
   async getAllTasks(): Promise<ITask[]> {
     return this.taskRepository.getAllTasks();
   }
@@ -25,7 +41,7 @@ export class TaskService implements ITaskService {
   }
 
   async getAllTaskArgs(): Promise<TaskArgs[]> {
-    return this.taskRepository.getAllTaskArgs();
+    return this.sortTaskArgsByDeadline(await this.taskRepository.getAllTaskArgs());
   }
 
   async getTaskArgsById(id: string): Promise<TaskArgs | null> {
@@ -35,25 +51,25 @@ export class TaskService implements ITaskService {
   async getTasksByCategory(category: Category): Promise<ITask[]> {
     const allTasks = await this.taskRepository.getAllTasks();
 
-    return allTasks.filter(task => task.categories.some(cat => cat.id === category.id)); // タスクのカテゴリに指定されたカテゴリが含まれているかを確認
+    return this.filterTaskByCategory(allTasks, category);
   }
 
   async getTaskArgsByCategory(category: Category): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return allTaskArgs.filter(taskArg => taskArg.categories.some(cat => cat.id === category.id)); // タスクのカテゴリに指定されたカテゴリが含まれているかを確認
+    return this.sortTaskArgsByDeadline(this.filterTaskArgsByCategory(allTaskArgs, category));
   }
 
   async getTaskArgsByStatus(status: 'uncompleted' | 'completed' | 'deadline-passed'): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return allTaskArgs.filter(taskArg => taskArg.status === status);
+    return this.sortTaskArgsByDeadline(this.filterTaskArgsByStatus(allTaskArgs, status));
   }
 
   async getTaskArgsByCategoryAndStatus(category: Category, status: 'uncompleted' | 'completed' | 'deadline-passed'): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return allTaskArgs.filter(taskArg => taskArg.status === status && taskArg.categories.some(cat => cat.id === category.id)); // ByCategoryとByStatusの合わせ技 なんかもっときれいに書けないかな
+    return this.sortTaskArgsByDeadline(this.filterTaskArgsByCategory(this.filterTaskArgsByStatus(allTaskArgs, status), category)); // ByCategoryとByStatusの合わせ技
   }
 
   async createTask(args: TaskArgs): Promise<void> {
