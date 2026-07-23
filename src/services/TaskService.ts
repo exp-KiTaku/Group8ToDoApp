@@ -115,7 +115,8 @@ export class TaskService implements ITaskService {
 
     if (task instanceof HabitTask) {
       // idが親タスクを指定していないか確認する
-      if (!task.habitId.includes(id)) {
+      if (task.id === id) {
+        console.log('指定されたIDは習慣タスクの子タスクではありません。');
         return;
       }
 
@@ -143,7 +144,8 @@ export class TaskService implements ITaskService {
 
     if (task instanceof HabitTask) {
       // idが親タスクを指定していないか確認する
-      if (!task.habitId.includes(id)) {
+      if (task.id === id) {
+        console.log('指定されたIDは習慣タスクの子タスクではありません。');
         return;
       }
 
@@ -167,8 +169,8 @@ export class TaskService implements ITaskService {
     const lastHabitId = task.habitId.at(-1);
     const newHabitId = crypto.randomUUID();
 
-    task.remove(lastHabitId!);
     task.append(newHabitId);
+    task.remove(lastHabitId!);
 
     await this.taskRepository.updateTask(task);
   }

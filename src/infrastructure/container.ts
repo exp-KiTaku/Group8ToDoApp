@@ -12,9 +12,9 @@ import { TYPES } from "./types";
 
 const container = new Container();
 
-container.bind<ICategoryRepository>(TYPES.ICategoryRepository).to(InMemoryCategoryRepository);
-container.bind<ITaskRepository>(TYPES.ITaskRepository).to(InMemoryTaskRepository);
-container.bind<ICategoryService>(TYPES.ICategoryService).to(CategoryService);
-container.bind<ITaskService>(TYPES.ITaskService).to(TaskService);
+container.bind<ICategoryRepository>(TYPES.ICategoryRepository).to(InMemoryCategoryRepository).inSingletonScope();
+container.bind<ITaskRepository>(TYPES.ITaskRepository).to(InMemoryTaskRepository).inSingletonScope();
+container.bind<ICategoryService>(TYPES.ICategoryService).to(CategoryService).inSingletonScope();
+container.bind<ITaskService>(TYPES.ITaskService).to(TaskService).inSingletonScope();
 
 export { container };

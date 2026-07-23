@@ -47,6 +47,12 @@
   border-radius: 4px;
 }
 
+.error-message {
+  color: #ff7b7b;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
 .selector-row {
   display: flex;
   align-items: center;

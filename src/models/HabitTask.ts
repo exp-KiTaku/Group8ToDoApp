@@ -70,7 +70,7 @@ export class HabitTask implements IHabitTask {
     }
 
     return {
-      id: this.id,
+      id: this.habitId[index],
       type: 'habit',
       title: this.title,
       description: this.description,
