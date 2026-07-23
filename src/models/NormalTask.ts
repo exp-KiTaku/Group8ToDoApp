@@ -82,7 +82,6 @@ export class NormalTask implements INormalTask {
     return this.deadline.getTime() < Date.now();
   }
 
-  //追加
   clone(): NormalTask {
     return new NormalTask({
       id: this.id,
@@ -96,4 +95,3 @@ export class NormalTask implements INormalTask {
     });
   }
 }
-

@@ -58,14 +58,14 @@ export class InMemoryTaskRepository implements ITaskRepository {
   }
 
   async createTask(task: ITask): Promise<void> {
-    this.tasks.push(task.clone());
+    this.tasks.push(task);
   }
 
   async updateTask(task: ITask): Promise<void> {
     const index = this.tasks.findIndex(t => t.id === task.id);
 
     if (index !== -1) {
-      this.tasks[index] = task.clone();
+      this.tasks[index] = task;
     }
   }
 

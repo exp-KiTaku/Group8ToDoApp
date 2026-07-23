@@ -176,7 +176,6 @@ export class HabitTask implements IHabitTask {
     return this.deadline[index].getTime() < Date.now();
   }
 
-  //追加
   clone(): HabitTask {
     // コンストラクタを利用して親情報をコピー
     const copy = new HabitTask(
