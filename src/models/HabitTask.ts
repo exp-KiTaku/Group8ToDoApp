@@ -116,7 +116,13 @@ export class HabitTask implements IHabitTask {
    */
   uncomplete(habitId: string): void {
     const index = this.getIndex(habitId);
-    this.status[index] = 'uncompleted';
+
+    if (this.isDeadlinePassed(habitId)) {
+      this.status[index] = 'deadline-passed';
+    } else {
+      this.status[index] = 'uncompleted';
+    }
+    
     this.completedAt[index] = null;
   }
 
@@ -167,14 +173,25 @@ export class HabitTask implements IHabitTask {
     this.completedAt.splice(index, 1);
   }
 
-
-
   /**
    * 指定した habitId の子タスクの期限が過ぎているかどうかを判定する
    */
   isDeadlinePassed(habitId: string): boolean {
     const index = this.getIndex(habitId);
     return this.deadline[index].getTime() < Date.now();
+  }
+
+  /**
+   * 指定した habitId の子タスクが30日以上期限切れかどうかを判定し、削除すべきかどうかを判定する
+   */
+  isOld(habitId: string): boolean {
+    const index = this.getIndex(habitId);
+    const now = Date.now();
+    const deadlineTime = this.deadline[index].getTime();
+    const timeDiff = now - deadlineTime;
+    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+    return daysDiff > 30;
   }
 
   clone(): HabitTask {
