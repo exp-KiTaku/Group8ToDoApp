@@ -50,13 +50,22 @@ const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpen
       setDescription('')
       setDeadline('')
       setIntervalDays('')
+      setHasCategoryError(false)
     }
   }, [isOpen])
 
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    if (!title.trim()) return
+    if (!title.trim()) {
+      setHasCategoryError(true)
+      return
+    }
+
+    if (!deadline.trim()) {
+      setHasCategoryError(true)
+      return
+    }
 
     const selectedCategories = (categories ?? []).filter((category) => selectedCategoryIds.includes(category.id))
     if (selectedCategories.length === 0) {
@@ -68,6 +77,7 @@ const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpen
     const parsedIntervalDays = taskType === '習慣タスク' ? Number(intervalDays) : undefined
 
     if (taskType === '習慣タスク' && (parsedIntervalDays === undefined || !Number.isInteger(parsedIntervalDays) || parsedIntervalDays <= 0)) {
+      setHasCategoryError(true)
       return
     }
 
@@ -103,6 +113,29 @@ const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpen
             value={title}
             onChange={(event) => setTitle(event.target.value)}
           />
+          <div className="editor-grid">
+            <input
+                type="datetime-local"
+                className="input-title"
+                value={deadline}
+                onChange={(event) => setDeadline(event.target.value)}
+            />
+            {taskType === '習慣タスク' && (
+
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="周期（日）"
+                className="input-title"
+                value={intervalDays}
+                onChange={(event) => {
+                  const nextValue = event.target.value.replace(/[^0-9]/g, '')
+                  setIntervalDays(nextValue)
+                }}
+              />
+          )}
+          </div>
 
           <div className="selector-row">
             <div className="type-selector" ref={dropdownRef}>
@@ -126,6 +159,7 @@ const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpen
                   ))}
                 </div>
               )}
+              
             </div>
             <CategoryDropDownList
               categories={categories}
@@ -135,43 +169,25 @@ const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpen
               showTaskEditButton={false}
               showAllOption={false}
             />
+
+            
           </div>
 
-          <div className="editor-grid">
+          
             <textarea
               placeholder="説明を入力"
               className="input-description"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             />
-            <input
-              type="datetime-local"
-              className="input-title"
-              value={deadline}
-              onChange={(event) => setDeadline(event.target.value)}
-            />
-          </div>
+            
+          
 
           {hasCategoryError && (
-            <div className="error-message">カテゴリーを1つ以上選択してください。</div>
+            <div className="error-message">未入力の項目があります。</div>
           )}
 
-          {taskType === '習慣タスク' && (
-            <div className="selector-row">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="周期（日）"
-                className="input-title"
-                value={intervalDays}
-                onChange={(event) => {
-                  const nextValue = event.target.value.replace(/[^0-9]/g, '')
-                  setIntervalDays(nextValue)
-                }}
-              />
-            </div>
-          )}
+          
 
           <div className="modal-footer">
             <button className="create-btn" type="submit">作成</button>

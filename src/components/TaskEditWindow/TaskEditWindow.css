@@ -16,10 +16,17 @@
 
 .modal-content {
   background-color: #1e1e1e;
-  height: 500px;
-  width: 600px;
+  
+  /* 幅を可変にしつつ最大値を指定 */
+  width: 90%;
+  max-width: 600px;
+  
+  /* 高さも内容に応じて可変にしつつ、画面からはみ出さないように設定 */
+  height: auto;
+  max-height: 85vh; /* 画面高さの85%を上限にする */
+  
   border-radius: 8px;
-  overflow: visible;
+  overflow: auto; /* 中身があふれた場合はスクロールできるように変更 */
   border: 1px solid #333;
   position: relative;
 }
@@ -142,10 +149,11 @@
   display: grid;
   grid-template-columns: 1fr 1fr; /* 左右2分割 */
   gap: 20px;
-  margin-bottom: 20px;
 }
 
 .input-description {
+  resize: none;
+  width: 100%;
   height: 200px;
   background: #3a3a3a;
   border: 1px solid #555;
@@ -154,14 +162,6 @@
   border-radius: 4px;
 }
 
-.calendar-placeholder {
-  background: #fff; /* カレンダー背景は白 */
-  height: 200px;
-  color: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .modal-footer {
   padding: 20px;

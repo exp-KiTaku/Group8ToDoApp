@@ -10,8 +10,8 @@ type TaskTabProps = {
 };
 
 const TaskTab: React.FC<TaskTabProps> = ({ tasks, selectedTaskId, onSelectTask }) => {
-  const uncompletedTasks = tasks.filter((task) => task.status === 'uncompleted');
-  const completedTasks = tasks.filter((task) => task.status === 'completed' || task.status === 'deadline-passed');
+  const uncompletedTasks = tasks.filter((task) => task.status === 'uncompleted' || task.status === 'deadline-passed');
+  const completedTasks = tasks.filter((task) => task.status === 'completed');
 
   const getStatusColor = (status: TaskArgs['status']) => {
     if (status === 'completed') return '#dff8e8';
@@ -35,6 +35,8 @@ const TaskTab: React.FC<TaskTabProps> = ({ tasks, selectedTaskId, onSelectTask }
               statusColor={getStatusColor(task.status)}
               isSelected={task.id === selectedTaskId}
               onSelect={() => task.id && onSelectTask?.(task.id)}
+              type={task.type}
+              intervalDays={task.type === 'habit' ? task.intervalDays : undefined}
             />
           ))}
         </div>
@@ -52,6 +54,8 @@ const TaskTab: React.FC<TaskTabProps> = ({ tasks, selectedTaskId, onSelectTask }
               statusColor={getStatusColor(task.status)}
               isSelected={task.id === selectedTaskId}
               onSelect={() => task.id && onSelectTask?.(task.id)}
+              type={task.type}
+              intervalDays={task.type === 'habit' ? task.intervalDays : undefined}
             />
           ))}
         </div>

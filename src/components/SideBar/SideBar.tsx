@@ -51,6 +51,48 @@ const SideBar: React.FC<SideBarProps> = ({ selectedTask, onDeleteTask, onComplet
 
   const fmt = (d: Date) => d.toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
 
+  const getStatusLabel = (status: TaskArgs['status']) => {
+    switch (status) {
+      case 'completed':
+        return { name: '完了', color: '#1eff3c' };
+      case 'deadline-passed':
+        return { name: '期限切れ', color: '#ff4d4f' };
+      case 'uncompleted':
+      default:
+        return { name: '未完了', color: '#888888' };
+    }
+  };
+
+  // ★ 削除確認ハンドラー
+  const handleDelete = () => {
+    if (!selectedTask) return;
+    if (window.confirm(`タスク「${selectedTask.title}」を削除してもよろしいですか？`)) {
+      void onDeleteTask?.();
+    }
+  };
+
+  // ★ 完了 / 未完了 切り替え確認ハンドラー
+  const handleComplete = () => {
+    if (!selectedTask) return;
+    
+    const isCompleted = selectedTask.status === 'completed';
+    const message = isCompleted
+      ? `タスク「${selectedTask.title}」を未完了に戻しますか？`
+      : `タスク「${selectedTask.title}」を完了にしますか？`;
+
+    if (window.confirm(message)) {
+      void onCompleteTask?.();
+    }
+  };
+
+  // ★ スキップ確認ハンドラー
+  const handleSkip = () => {
+    if (!selectedTask) return;
+    if (window.confirm(`タスク「${selectedTask.title}」をスキップしてもよろしいですか？`)) {
+      void onSkipTask?.();
+    }
+  };
+
   return (
     <aside className="sidebar" style={{ width: `${sidebarWidth}px` }}>
       <div className="sidebar-resizer" onMouseDown={handlePointerDown} />
@@ -63,8 +105,8 @@ const SideBar: React.FC<SideBarProps> = ({ selectedTask, onDeleteTask, onComplet
           ))}
           {selectedTask && (
             <CategoryCard
-              name={selectedTask.status === 'completed' || selectedTask.status === 'deadline-passed' ? '完了' : '未完了'}
-              color={selectedTask.status === 'completed' || selectedTask.status === 'deadline-passed' ? '#1eff3c' : '#888'}
+              name={getStatusLabel(selectedTask.status).name}
+              color={getStatusLabel(selectedTask.status).color}
             />
           )}
         </div>
@@ -72,23 +114,25 @@ const SideBar: React.FC<SideBarProps> = ({ selectedTask, onDeleteTask, onComplet
       </div>
 
       <div className="sidebar-section task-actions">
-        <button className="delete-btn" type="button" onClick={onDeleteTask} disabled={!selectedTask}>
+        <button className="delete-btn" type="button" onClick={handleDelete} disabled={!selectedTask}>
           🗑️
         </button>
-        <button className="skip-btn" type="button" onClick={onSkipTask} disabled={!selectedTask || selectedTask.type !== 'habit' || selectedTask.status === 'completed'}>
+        <button className="skip-btn" type="button" onClick={handleSkip} disabled={!selectedTask || selectedTask.type !== 'habit' || selectedTask.status === 'completed'}>
           ≫
         </button>
-        <button className="complete-btn" type="button" onClick={onCompleteTask} disabled={!selectedTask}>
+        <button className="complete-btn" type="button" onClick={handleComplete} disabled={!selectedTask}>
           ✔
         </button>
       </div>
 
       {/* 3. カレンダーエリア（枠のみ） */}
+      {/*
       <div className="sidebar-section calendar-area">
         <div className="calendar-placeholder">
           [カレンダーコンポーネント配置予定]
         </div>
       </div>
+      */}
     </aside>
   );
 };

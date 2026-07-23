@@ -37,8 +37,16 @@ function App() {
   }
 
   useEffect(() => {
-    void loadData()
-  }, [])
+  const initializeApp = async () => {
+    console.log('Initializing app...')
+    // 1. ページロード時にステータスを更新
+    await taskService.updateAllTaskStatuses()
+    // 2. その後に最新データを読み込む
+    await loadData()
+  }
+
+  void initializeApp()
+}, [])
 
   const handleCreateTask = async (args: TaskArgs) => {
     await taskService.createTask(args)
@@ -48,6 +56,12 @@ function App() {
 
   const handleCreateCategory = async (name: string, color: string) => {
     await categoryService.createCategory(name, color)
+    await loadData()
+    setIsCategoryEditOpen(false)
+  }
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    await categoryService.deleteCategory(categoryId)
     await loadData()
     setIsCategoryEditOpen(false)
   }
@@ -70,7 +84,7 @@ function App() {
     const targetTask = tasks.find((task) => task.id === selectedTaskId)
     if (!targetTask) return
 
-    if (targetTask.status === 'completed' || targetTask.status === 'deadline-passed') {
+    if (targetTask.status === 'completed') {
       await taskService.uncompleteTask(selectedTaskId)
     } else {
       await taskService.completeTask(selectedTaskId)
@@ -89,6 +103,8 @@ function App() {
     await loadData()
   }
 
+
+
   const visibleTasks = selectedCategoryIds.includes(CATEGORY_ID_ALL)
     ? tasks
     : tasks.filter((task) => task.categories.some((category) => selectedCategoryIds.includes(category.id)))
@@ -105,6 +121,13 @@ function App() {
               onSelectionChange={setSelectedCategoryIds}
               onOpenEdit={() => setIsCategoryEditOpen(true)}
               onOpenTaskEdit={() => setIsTaskEditOpen(true)}
+              onEditCategory={(categoryId) => {
+                // Implement category edit logic
+              }}
+              onDeleteCategory={(categoryId) => {
+                console.log(`Deleting category with ID: ${categoryId}`)
+                handleDeleteCategory(categoryId)
+              }}
             />
           </div>
 
