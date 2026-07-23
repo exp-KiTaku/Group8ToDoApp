@@ -72,9 +72,21 @@ export class InMemoryTaskRepository implements ITaskRepository {
   }
 
   async deleteTask(id: string): Promise<void> {
-    this.tasks = this.tasks.filter(task => task.id !== id);
-  }
+    // 親ID(通常タスク・習慣タスク)ならタスクごと削除
+    const index = this.tasks.findIndex(task => task.id === id);
+    if (index !== -1) {
+      this.tasks.splice(index, 1);
+      return;
+    }
 
+    // 子ID(habitId)ならその子だけ削除
+    for (const task of this.tasks) {
+      if (task instanceof HabitTask && task.habitId.includes(id)) {
+        task.remove(id);
+        return;
+      }
+    }
+  }
   async appendHabitTask(id: string, newId: string): Promise<void> {
     const task = this.tasks.find(task => task.id === id);
 
