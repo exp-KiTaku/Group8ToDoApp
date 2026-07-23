@@ -12,6 +12,6 @@ export interface INormalTask extends ITask {
   uncomplete(): void;
   updateStatus(): void;
   isDeadlinePassed(): boolean;
-  
+  isOld(): boolean; // 30日以上期限切れかどうかを判定し、削除すべきかどうかを判定する
   clone(): INormalTask;
 }

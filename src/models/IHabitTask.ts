@@ -18,5 +18,6 @@ export interface IHabitTask extends ITask {
   append(newHabitId: string): void; // 末尾に子タスクを追加する（IDはService側で生成して渡す）
   remove(habitId: string): void;
   isDeadlinePassed(habitId: string): boolean;
+  isOld(habitId: string): boolean; // 30日以上期限切れかどうかを判定し、削除すべきかどうかを判定する
   clone(): IHabitTask;
 }

@@ -129,6 +129,29 @@ export class TaskService implements ITaskService {
     }
   }
 
+  async deleteOldTasks(): Promise<void> {
+    const allTasks = await this.taskRepository.getAllTasks();
+
+    for (const task of allTasks) {
+
+      if (task instanceof NormalTask && task.isOld()) {
+        // 通常タスクが30日以上期限切れの場合は削除する
+        await this.taskRepository.deleteTask(task.id);
+
+        continue; // 削除した場合は次のタスクへ
+      } else if (task instanceof HabitTask) {
+        // 習慣タスクの子タスクが30日以上期限切れの場合は削除する
+        const habitIdsToRemove = task.habitId.filter(habitId => task.isOld(habitId));
+
+        for (const habitId of habitIdsToRemove) {
+          task.remove(habitId);
+        }
+
+        await this.taskRepository.updateTask(task);
+      }
+    }
+  }
+
   async completeTask(id: string): Promise<void> {
     const task = await this.taskRepository.getTaskById(id); // 通常タスクの場合は単にID, 習慣タスクの場合は子タスクのIDを指定 (親が返ってくる)
     if (!task) {
