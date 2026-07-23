@@ -87,6 +87,7 @@ export class InMemoryTaskRepository implements ITaskRepository {
       }
     }
   }
+  
   async appendHabitTask(id: string, newId: string): Promise<void> {
     const task = this.tasks.find(task => task.id === id);
 
