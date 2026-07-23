@@ -41,8 +41,10 @@ function App() {
     console.log('Initializing app...')
     // 1. ページロード時にステータスを更新
     await taskService.updateAllTaskStatuses()
+    await taskService.deleteOldTasks()
     // 2. その後に最新データを読み込む
     await loadData()
+    
   }
 
   void initializeApp()
