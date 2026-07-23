@@ -2,7 +2,9 @@ import type { TaskArgs } from "../models/TaskArgs";
 import type { ITask } from "../models/ITask";
 import { HabitTask } from "../models/HabitTask";
 import type { ITaskRepository } from "./ITaskRepository";
+import { injectable } from "inversify";
 
+@injectable()
 export class InMemoryTaskRepository implements ITaskRepository {
   private tasks: ITask[] = [];
 

@@ -1,6 +1,8 @@
 import type { Category } from "../models/Category";
 import type { ICategoryRepository } from "./ICategoryRepository";
+import { injectable } from "inversify";
 
+@injectable()
 export class InMemoryCategoryRepository implements ICategoryRepository {
   private categories: Category[] = [];
 
