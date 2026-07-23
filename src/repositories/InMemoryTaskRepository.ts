@@ -7,22 +7,20 @@ export class InMemoryTaskRepository implements ITaskRepository {
   private tasks: ITask[] = [];
 
   async getAllTasks(): Promise<ITask[]> {
-    return [...this.tasks];
+    return this.tasks.map(task => task.clone());
   }
 
   async getTaskById(id: string): Promise<ITask | null> {
     // 親IDを探す
     const task = this.tasks.find(task => task.id === id);
     if (task) {
-      return task;
+      return task.clone();
     }
 
     // habitIdを探す
     for (const task of this.tasks) {
-      if (task instanceof HabitTask) {
-        if (task.habitId.includes(id)) {
-          return task;
-        }
+      if (task instanceof HabitTask && task.habitId.includes(id)) {
+        return task.clone();
       }
     }
 
@@ -60,14 +58,14 @@ export class InMemoryTaskRepository implements ITaskRepository {
   }
 
   async createTask(task: ITask): Promise<void> {
-    this.tasks.push(task);
+    this.tasks.push(task.clone());
   }
 
   async updateTask(task: ITask): Promise<void> {
     const index = this.tasks.findIndex(t => t.id === task.id);
 
     if (index !== -1) {
-      this.tasks[index] = task;
+      this.tasks[index] = task.clone();
     }
   }
 

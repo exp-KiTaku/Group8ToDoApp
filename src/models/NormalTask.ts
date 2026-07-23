@@ -81,5 +81,19 @@ export class NormalTask implements INormalTask {
   isDeadlinePassed(): boolean {
     return this.deadline.getTime() < Date.now();
   }
+
+  //追加
+  clone(): NormalTask {
+    return new NormalTask({
+      id: this.id,
+      type: 'normal',
+      title: this.title,
+      description: this.description,
+      categories: [...this.categories],
+      status: this.status,
+      deadline: new Date(this.deadline),
+      completedAt: this.completedAt ? new Date(this.completedAt) : null,
+    });
+  }
 }
 

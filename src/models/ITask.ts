@@ -17,4 +17,7 @@ export interface ITask {
   uncomplete(habitId?: string): void;
   updateStatus(habitId?: string): void;
   isDeadlinePassed(habitId?: string): boolean;
+
+  //追加
+  clone(): ITask;
 }

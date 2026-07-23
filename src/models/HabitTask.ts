@@ -175,4 +175,36 @@ export class HabitTask implements IHabitTask {
     const index = this.getIndex(habitId);
     return this.deadline[index].getTime() < Date.now();
   }
+
+  //追加
+  clone(): HabitTask {
+    // コンストラクタを利用して親情報をコピー
+    const copy = new HabitTask(
+      {
+        id: this.id,
+        type: "habit",
+        title: this.title,
+        description: this.description,
+        categories: [...this.categories],
+        status: this.status[0],
+        deadline: new Date(this.deadline[0]),
+        completedAt: this.completedAt[0]
+          ? new Date(this.completedAt[0]!)
+          : null,
+        intervalDays: this.intervalDays,
+      },
+      this.habitId[0]
+    );
+
+    // 子タスク情報をディープコピー
+    copy.habitId = [...this.habitId];
+    copy.status = [...this.status];
+    copy.deadline = this.deadline.map(d => new Date(d));
+    copy.completedAt = this.completedAt.map(d =>
+      d ? new Date(d) : null
+    );
+
+    return copy;
+  }
+
 }

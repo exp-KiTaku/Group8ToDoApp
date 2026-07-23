@@ -19,4 +19,7 @@ export interface IHabitTask extends ITask {
   remove(habitId: string): void;
 
   isDeadlinePassed(habitId: string): boolean;
+
+  //追加
+  clone(): IHabitTask;
 }
