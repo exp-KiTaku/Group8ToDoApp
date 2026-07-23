@@ -16,6 +16,10 @@ export class TaskService implements ITaskService {
     this.taskRepository = taskRepository;
   }
 
+  private sortTaskArgsByDeadline(taskArgsArray: TaskArgs[]): TaskArgs[] {
+    return taskArgsArray.sort((a, b) => a.deadline.getTime() - b.deadline.getTime());
+  }
+
   async getAllTasks(): Promise<ITask[]> {
     return this.taskRepository.getAllTasks();
   }
@@ -25,7 +29,7 @@ export class TaskService implements ITaskService {
   }
 
   async getAllTaskArgs(): Promise<TaskArgs[]> {
-    return this.taskRepository.getAllTaskArgs();
+    return this.sortTaskArgsByDeadline(await this.taskRepository.getAllTaskArgs());
   }
 
   async getTaskArgsById(id: string): Promise<TaskArgs | null> {
@@ -41,19 +45,19 @@ export class TaskService implements ITaskService {
   async getTaskArgsByCategory(category: Category): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return allTaskArgs.filter(taskArg => taskArg.categories.some(cat => cat.id === category.id)); // タスクのカテゴリに指定されたカテゴリが含まれているかを確認
+    return this.sortTaskArgsByDeadline(allTaskArgs.filter(taskArg => taskArg.categories.some(cat => cat.id === category.id))); // タスクのカテゴリに指定されたカテゴリが含まれているかを確認
   }
 
   async getTaskArgsByStatus(status: 'uncompleted' | 'completed' | 'deadline-passed'): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return allTaskArgs.filter(taskArg => taskArg.status === status);
+    return this.sortTaskArgsByDeadline(allTaskArgs.filter(taskArg => taskArg.status === status));
   }
 
   async getTaskArgsByCategoryAndStatus(category: Category, status: 'uncompleted' | 'completed' | 'deadline-passed'): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return allTaskArgs.filter(taskArg => taskArg.status === status && taskArg.categories.some(cat => cat.id === category.id)); // ByCategoryとByStatusの合わせ技 なんかもっときれいに書けないかな
+    return this.sortTaskArgsByDeadline(allTaskArgs.filter(taskArg => taskArg.status === status && taskArg.categories.some(cat => cat.id === category.id))); // ByCategoryとByStatusの合わせ技 なんかもっときれいに書けないかな
   }
 
   async createTask(args: TaskArgs): Promise<void> {
