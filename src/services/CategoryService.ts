@@ -1,15 +1,21 @@
 import { Category } from '../models/Category';
 import type { ICategoryService } from '../services/ICategoryService';
 import type { ICategoryRepository } from '../repositories/ICategoryRepository';
+import type { ITaskRepository } from '../repositories/ITaskRepository';
 import { TYPES } from '../infrastructure/types';
 import { inject, injectable } from 'inversify';
 
 @injectable()
 export class CategoryService implements ICategoryService {
   private categoryRepository: ICategoryRepository;
+  private taskRepository: ITaskRepository;
 
-  constructor(@inject(TYPES.ICategoryRepository) categoryRepository: ICategoryRepository) {
+  constructor(
+    @inject(TYPES.ICategoryRepository) categoryRepository: ICategoryRepository,
+    @inject(TYPES.ITaskRepository) taskRepository: ITaskRepository
+  ) {
     this.categoryRepository = categoryRepository;
+    this.taskRepository = taskRepository;
   }
 
   async getAllCategories(): Promise<Category[]> {
@@ -38,7 +44,17 @@ export class CategoryService implements ICategoryService {
     await this.categoryRepository.updateCategory(category);
   }
 
+  async isCategoryUsed(id: string): Promise<boolean> {
+    const allTasks = await this.taskRepository.getAllTasks();
+    return allTasks.some(task => task.categories.some(category => category.id === id));
+  }
+
   async deleteCategory(id: string): Promise<void> {
+    const isUsed = await this.isCategoryUsed(id);
+    if (isUsed) {
+      throw new Error('Cannot delete category because it is used by some tasks');
+    }
+
     await this.categoryRepository.deleteCategory(id);
   }
 }

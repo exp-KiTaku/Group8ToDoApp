@@ -5,6 +5,7 @@ export interface ICategoryService {
   getCategoryById(id: string): Promise<Category | null>;
   createCategory(name: string, color: string): Promise<void>;
   updateCategory(id: string, name: string, color: string): Promise<void>;
+  isCategoryUsed(id: string): Promise<boolean>;
   deleteCategory(id: string): Promise<void>;
 }
 
