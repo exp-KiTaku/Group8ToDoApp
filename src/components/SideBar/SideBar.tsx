@@ -51,8 +51,8 @@ const SideBar: React.FC = () => {
         <div className="task-labels">
           {/*<span className="label-category">カテゴリー名</span>
           <span className="label-status">ステータス</span> */}
-          <CategoryCard label="仕事" color="#ff6347" />
-          <CategoryCard label="完了" color="#1eff3c" />
+          <CategoryCard name="仕事" color="#ff6347" />
+          <CategoryCard name="完了" color="#1eff3c" />
         </div>
         <div className="task-description">説明</div>
       </div>

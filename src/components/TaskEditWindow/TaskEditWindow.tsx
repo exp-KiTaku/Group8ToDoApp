@@ -3,18 +3,21 @@ import React, { useEffect, useRef, useState } from 'react'
 import './TaskEditWindow.css'
 import CategoryDropDownList from '../CategoryDropDownList/CategoryDropDownList'
 
+import type { Category } from '../../models/Category'
+
 type TaskEditWindowProps = {
   isOpen: boolean
   onClose: () => void
   onOpenCategoryEdit?: () => void
+  categories?: Category[]
 }
 
 type TaskType = '通常タスク' | '習慣タスク'
 
-const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpenCategoryEdit }) => {
+const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpenCategoryEdit, categories }) => {
   const [taskType, setTaskType] = useState<TaskType>('通常タスク')
   const [isTypeOpen, setIsTypeOpen] = useState(false)
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([0])
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(['0']) // 初期値は「すべて」を選択
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -70,6 +73,7 @@ const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpen
               )}
             </div>
             <CategoryDropDownList
+              categories={categories}
               selectedCategoryIds={selectedCategoryIds}
               onSelectionChange={setSelectedCategoryIds}
               onOpenEdit={() => onOpenCategoryEdit?.()}

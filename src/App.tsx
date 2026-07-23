@@ -7,11 +7,19 @@ import Footer from './components/Footer/Footer'
 import TaskEditWindow from './components/TaskEditWindow/TaskEditWindow'
 import CategoryEditWindow from './components/CategoryEditWindow/CategoryEditWindow'
 import CategoryDropDownList from './components/CategoryDropDownList/CategoryDropDownList'
+import { Category } from './models/Category'
 
 function App() {
   const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false)
   const [isTaskEditOpen, setIsTaskEditOpen] = useState(false)
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([0])
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(['0'])
+  
+  // テスト用カテゴリーデータ
+  const [categories] = useState<Category[]>([
+    new Category('1', '仕事', '#ff6347'),
+    new Category('2', '学習', '#1e90ff'),
+    new Category('3', 'プライベート', '#32cd32'),
+  ])
 
   return (
     <div className="app-shell">
@@ -20,6 +28,7 @@ function App() {
         <main className="main-content">
           <div className="toolbar-row">
             <CategoryDropDownList
+              categories={categories}
               selectedCategoryIds={selectedCategoryIds}
               onSelectionChange={setSelectedCategoryIds}
               onOpenEdit={() => setIsCategoryEditOpen(true)}
@@ -40,6 +49,7 @@ function App() {
               setIsTaskEditOpen(false)
               setIsCategoryEditOpen(true)
             }}
+            categories={categories}
           />
         </main>
         <SideBar />

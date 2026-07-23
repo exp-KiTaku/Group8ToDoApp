@@ -2,26 +2,23 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './CategoryDropDownList.css'
 import TaskEditButton from '../TaskEditButton/TaskEditButton'
-
-type Category = {
-  id: number
-  name: string
-  color: string
-}
+import {Category} from '../../models/Category.ts'
+import { CATEGORY_ALL} from '../../constants/constants.ts'
 
 type CategoryDropDownListProps = {
   categories?: Category[]
-  selectedCategoryIds?: number[]
-  onSelectionChange?: (ids: number[]) => void
+  selectedCategoryIds?: string[]
+  onSelectionChange?: (ids: string[]) => void
   onOpenEdit: () => void
   onOpenTaskEdit?: () => void
   showTaskEditButton?: boolean
   showAllOption?: boolean
 }
 
+
 const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
   categories: categoriesProp,
-  selectedCategoryIds = [0],
+  selectedCategoryIds = [CATEGORY_ALL.id],
   onSelectionChange,
   onOpenEdit,
   onOpenTaskEdit,
@@ -30,13 +27,9 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const categories = categoriesProp ?? [
-    { id: 1, name: '仕事', color: '#ff6347' },
-    { id: 2, name: '学習', color: '#1e90ff' },
-    { id: 3, name: 'プライベート', color: '#32cd32' },
-  ]
+  const categories = categoriesProp ?? []
   const dropdownCategories = showAllOption
-    ? [{ id: 0, name: 'すべて', color: '#888' }, ...categories]
+    ? [CATEGORY_ALL, ...categories]
     : categories
 
   useEffect(() => {
@@ -55,13 +48,13 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
     }
   }, [isOpen])
 
-  const handleSelect = (id: number) => {
-    if (id === 0) {
-      onSelectionChange?.([0])
+  const handleSelect = (id: string) => {
+    if (id === CATEGORY_ALL.id) {
+      onSelectionChange?.([CATEGORY_ALL.id])
       return
     }
 
-    const currentSelection = selectedCategoryIds.includes(0)
+    const currentSelection = selectedCategoryIds.includes(CATEGORY_ALL.id)
       ? []
       : [...selectedCategoryIds]
 
@@ -69,7 +62,7 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
       ? currentSelection.filter((categoryId) => categoryId !== id)
       : [...currentSelection, id]
 
-    onSelectionChange?.(nextSelection.length === 0 ? [0] : nextSelection)
+    onSelectionChange?.(nextSelection.length === 0 ? [CATEGORY_ALL.id] : nextSelection)
   }
 
   const handleOpenEdit = () => {
@@ -81,12 +74,12 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
     .filter((cat) => selectedCategoryIds.includes(cat.id))
     .map((cat) => cat.name)
 
-  const buttonLabel = selectedNames.length === 0 || selectedCategoryIds.includes(0)
-    ? 'すべて'
+  const buttonLabel = selectedNames.length === 0 || selectedCategoryIds.includes(CATEGORY_ALL.id    )
+    ? 'カテゴリー'
     : selectedNames.join('・')
 
   return (
-    <div className="task-toolbar" ref={dropdownRef}>
+    <div className="category-toolbar" ref={dropdownRef}>
       <button className="category-filter-btn" onClick={() => setIsOpen((prev) => !prev)}>
         {isOpen ? '▼' : '▶'} {buttonLabel}
       </button>

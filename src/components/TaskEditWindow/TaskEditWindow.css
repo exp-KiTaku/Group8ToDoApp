@@ -54,7 +54,8 @@
   margin-bottom: 20px;
 }
 
-.selector-row .task-toolbar {
+.selector-row .task-toolbar,
+.selector-row .category-toolbar {
   width: auto;
   justify-content: flex-start;
   padding: 0;
@@ -168,4 +169,15 @@
   color: #fff;
   border: none;
   cursor: pointer;
+}
+
+/* Modal-specific overrides to ensure left-aligned dropdown in TaskEditWindow */
+.modal-content .selector-row .category-toolbar {
+  justify-content: flex-start !important;
+  width: auto !important;
+}
+
+.modal-content .selector-row .category-toolbar > .dropdown-overlay {
+  left: 0 !important;
+  right: auto !important;
 }

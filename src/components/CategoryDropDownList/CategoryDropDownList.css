@@ -1,17 +1,16 @@
 /* src/components/CategoryDropDownList/CategoryDropDownList.css */
-.task-toolbar {
+.category-toolbar {
   position: relative;
-  display: inline-flex;
+  display: flex;
+  justify-content: flex-end; /* 右寄せ */
   align-items: center;
-  gap: 8px;
-  width: fit-content;
-  margin-left: auto;
+  width: 100%;
 }
 
-.dropdown-overlay {
+.category-toolbar > .dropdown-overlay {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  right: 0;
   z-index: 1100;
   display: block;
 }
@@ -20,9 +19,7 @@
   background-color: #2a2a2a !important;
   color: #ffffff !important;
   border-radius: 8px;
-  width: fit-content;
-  min-width: 180px;
-  max-width: 240px;
+  width: 200px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   display: flex;

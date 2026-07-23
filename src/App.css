@@ -56,3 +56,14 @@ body {
   right: 0;
   z-index: 1000;
 }
+
+/* Right-align CategoryDropDownList toolbar when used in App layout */
+.main-content > .category-toolbar,
+.toolbar-row .category-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 20px;
+  position: relative;
+  width: 100%;
+}

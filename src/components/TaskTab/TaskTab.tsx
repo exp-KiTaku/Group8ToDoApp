@@ -11,7 +11,7 @@ const TaskTab: React.FC = () => {
         <h2 className="column-title">未完了タスク</h2>
         <div className="task-list-container">
           {/* ここに将来的に TaskCard が並びます */}
-            <TaskCard title="タスク1" dueDate="2023-12-31" categoryColor="#ff6347" statusColor="#ffffff" />
+            <TaskCard title="タスク1" deadline="2023-12-31" categoryColor="#ff6347" statusColor="#ffffff" />
 
         </div>
       </div>
