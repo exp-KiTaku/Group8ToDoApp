@@ -177,6 +177,19 @@ export class HabitTask implements IHabitTask {
     return this.deadline[index].getTime() < Date.now();
   }
 
+  /**
+   * 指定した habitId の子タスクが30日以上期限切れかどうかを判定し、削除すべきかどうかを判定する
+   */
+  isOld(habitId: string): boolean {
+    const index = this.getIndex(habitId);
+    const now = Date.now();
+    const deadlineTime = this.deadline[index].getTime();
+    const timeDiff = now - deadlineTime;
+    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+    return daysDiff > 30;
+  }
+
   clone(): HabitTask {
     // コンストラクタを利用して親情報をコピー
     const copy = new HabitTask(

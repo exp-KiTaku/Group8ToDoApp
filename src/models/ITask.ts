@@ -17,5 +17,6 @@ export interface ITask {
   uncomplete(habitId?: string): void;
   updateStatus(habitId?: string): void;
   isDeadlinePassed(habitId?: string): boolean;
+  isOld(habitId?: string): boolean; // 30日以上期限切れかどうかを判定し、削除すべきかどうかを判定する
   clone(): ITask;
 }
