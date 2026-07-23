@@ -63,7 +63,12 @@ export class NormalTask implements INormalTask {
    * タスクの完了状態を取り消し、完了日時をリセットする
    */
   uncomplete(): void {
-    this.status = 'uncompleted';
+    if (this.isDeadlinePassed()) {
+      this.status = 'deadline-passed';
+    } else {
+      this.status = 'uncompleted';
+    }
+    
     this.completedAt = null;
   }
 

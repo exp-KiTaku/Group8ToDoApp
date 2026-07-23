@@ -116,7 +116,13 @@ export class HabitTask implements IHabitTask {
    */
   uncomplete(habitId: string): void {
     const index = this.getIndex(habitId);
-    this.status[index] = 'uncompleted';
+
+    if (this.isDeadlinePassed(habitId)) {
+      this.status[index] = 'deadline-passed';
+    } else {
+      this.status[index] = 'uncompleted';
+    }
+    
     this.completedAt[index] = null;
   }
 
@@ -166,8 +172,6 @@ export class HabitTask implements IHabitTask {
     this.deadline.splice(index, 1);
     this.completedAt.splice(index, 1);
   }
-
-
 
   /**
    * 指定した habitId の子タスクの期限が過ぎているかどうかを判定する
