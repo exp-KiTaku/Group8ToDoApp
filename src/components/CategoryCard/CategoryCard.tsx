@@ -2,15 +2,15 @@ import React from 'react'
 import './CategoryCard.css'
 
 type CategoryCardProps = {
-  label: string
+  name: string
   color: string
 }
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({ label, color }) => {
+export const CategoryCard: React.FC<CategoryCardProps> = ({ name, color }) => {
   return (
     <div className="category-card">
       <span className="category-dot" style={{ backgroundColor: color }}></span>
-      <span className="category-label">{label}</span>
+      <span className="category-label">{name}</span>
     </div>
   )
 }
