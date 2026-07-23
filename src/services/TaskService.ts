@@ -69,7 +69,7 @@ export class TaskService implements ITaskService {
   async getTaskArgsByCategoriesAndStatus(categories: Category[], status: 'uncompleted' | 'completed' | 'deadline-passed'): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return this.sortTaskArgsByDeadline(this.filterTaskArgsByCategories(this.filterTaskArgsByStatus(allTaskArgs, status), categories)); // ByCategoryとByStatusの合わせ技
+    return this.sortTaskArgsByDeadline(this.filterTaskArgsByCategories(this.filterTaskArgsByStatus(allTaskArgs, status), categories)); // ByCategoriesとByStatusの合わせ技
   }
 
   async createTask(args: TaskArgs): Promise<void> {
