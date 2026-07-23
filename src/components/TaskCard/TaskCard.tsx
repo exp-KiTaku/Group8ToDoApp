@@ -14,7 +14,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ title, deadline, categoryColor, sta
   return (
     <div className="task-card" style={{ backgroundColor: statusColor }}>
       {/* カテゴリー色を反映したアイコン */}
-      {/* カテゴリー色は先頭のものだけ表示 or すべて並べて表示？ */}
+      {/* カテゴリー色は先頭のものだけ表示*/}
       <div className="task-icon" style={{ backgroundColor: categoryColor }}></div>
       <div className="task-content">
         <div className="taskcard-title">{title}</div>

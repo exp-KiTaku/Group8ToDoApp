@@ -4,6 +4,7 @@ import './TaskEditWindow.css'
 import CategoryDropDownList from '../CategoryDropDownList/CategoryDropDownList'
 
 import type { Category } from '../../models/Category'
+import { CATEGORY_ID_ALL } from '../../constants/constants'
 
 type TaskEditWindowProps = {
   isOpen: boolean
@@ -17,7 +18,7 @@ type TaskType = '通常タスク' | '習慣タスク'
 const TaskEditWindow: React.FC<TaskEditWindowProps> = ({ isOpen, onClose, onOpenCategoryEdit, categories }) => {
   const [taskType, setTaskType] = useState<TaskType>('通常タスク')
   const [isTypeOpen, setIsTypeOpen] = useState(false)
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(['0']) // 初期値は「すべて」を選択
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([CATEGORY_ID_ALL]) // 初期値は「すべて」を選択
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

@@ -2,8 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './CategoryDropDownList.css'
 import TaskEditButton from '../TaskEditButton/TaskEditButton'
-import {Category} from '../../models/Category.ts'
-import { CATEGORY_ALL} from '../../constants/constants.ts'
+import { Category } from '../../models/Category'
+import { CATEGORY_ID_ALL, CATEGORY_ALL } from '../../constants/constants'
 
 type CategoryDropDownListProps = {
   categories?: Category[]
@@ -18,7 +18,7 @@ type CategoryDropDownListProps = {
 
 const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
   categories: categoriesProp,
-  selectedCategoryIds = [CATEGORY_ALL.id],
+  selectedCategoryIds = [CATEGORY_ID_ALL],
   onSelectionChange,
   onOpenEdit,
   onOpenTaskEdit,
@@ -49,12 +49,12 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
   }, [isOpen])
 
   const handleSelect = (id: string) => {
-    if (id === CATEGORY_ALL.id) {
-      onSelectionChange?.([CATEGORY_ALL.id])
+    if (id === CATEGORY_ID_ALL) {
+      onSelectionChange?.([CATEGORY_ID_ALL])
       return
     }
 
-    const currentSelection = selectedCategoryIds.includes(CATEGORY_ALL.id)
+    const currentSelection = selectedCategoryIds.includes(CATEGORY_ID_ALL)
       ? []
       : [...selectedCategoryIds]
 
@@ -62,7 +62,7 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
       ? currentSelection.filter((categoryId) => categoryId !== id)
       : [...currentSelection, id]
 
-    onSelectionChange?.(nextSelection.length === 0 ? [CATEGORY_ALL.id] : nextSelection)
+    onSelectionChange?.(nextSelection.length === 0 ? [CATEGORY_ID_ALL] : nextSelection)
   }
 
   const handleOpenEdit = () => {
@@ -74,7 +74,7 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
     .filter((cat) => selectedCategoryIds.includes(cat.id))
     .map((cat) => cat.name)
 
-  const buttonLabel = selectedNames.length === 0 || selectedCategoryIds.includes(CATEGORY_ALL.id    )
+  const buttonLabel = selectedNames.length === 0 || selectedCategoryIds.includes(CATEGORY_ID_ALL    )
     ? 'カテゴリー'
     : selectedNames.join('・')
 

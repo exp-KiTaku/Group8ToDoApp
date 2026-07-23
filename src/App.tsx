@@ -8,11 +8,12 @@ import TaskEditWindow from './components/TaskEditWindow/TaskEditWindow'
 import CategoryEditWindow from './components/CategoryEditWindow/CategoryEditWindow'
 import CategoryDropDownList from './components/CategoryDropDownList/CategoryDropDownList'
 import { Category } from './models/Category'
+import { CATEGORY_ID_ALL } from './constants/constants'
 
 function App() {
   const [isCategoryEditOpen, setIsCategoryEditOpen] = useState(false)
   const [isTaskEditOpen, setIsTaskEditOpen] = useState(false)
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(['0'])
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([CATEGORY_ID_ALL]) // 初期値は「すべて」を選択
   
   // テスト用カテゴリーデータ
   const [categories] = useState<Category[]>([
