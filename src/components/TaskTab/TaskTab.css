@@ -1,0 +1,31 @@
+.task-tab-container {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  height: 100%;
+  padding: 20px 20px 40px;
+  margin-bottom: 20px;
+}
+
+.task-column {
+  flex: 1;
+  background-color: #2c2c2c; /* カラムの背景色 */
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  min-height: 500px;
+}
+
+.column-title {
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #4a90e2; /* ヘッダーのアクセントライン */
+}
+
+.task-list-container {
+  flex: 1;
+  overflow-y: auto; /* タスクが増えた際のスクロール用 */
+}
