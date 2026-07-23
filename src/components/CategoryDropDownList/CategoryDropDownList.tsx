@@ -74,7 +74,7 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
     .filter((cat) => selectedCategoryIds.includes(cat.id))
     .map((cat) => cat.name)
 
-  const buttonLabel = selectedNames.length === 0 || selectedCategoryIds.includes(CATEGORY_ID_ALL    )
+  const buttonLabel = selectedNames.length === 0 || selectedCategoryIds.includes(CATEGORY_ID_ALL)
     ? 'カテゴリー'
     : selectedNames.join('・')
 
