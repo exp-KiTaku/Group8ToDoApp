@@ -46,13 +46,16 @@ const CategoryEditWindow: React.FC<CategoryEditWindowProps> = ({ isOpen, onClose
           />
 
           <div className="selector-row">
-            <input
-              type="color"
-              className="input-category"
-              value={color}
-              onChange={(event) => setColor(event.target.value)}
-            />
-            <span>{color}</span>
+            <label className = "color-picker-label">
+              <input
+                type="color"
+                className="input-color-hidden"
+                value={color}
+                onChange={(event) => setColor(event.target.value)}
+              />
+              <span className="selected-color-dot" style={{ backgroundColor: color }}></span>
+              <span>カテゴリーカラー : {color}</span>
+            </label>
           </div>
 
           <div className="modal-footer">
