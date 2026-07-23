@@ -31,7 +31,8 @@ function App() {
       categoryService.getAllCategories(),
       taskService.getAllTaskArgs(),
     ])
-
+    console.log('loaded categories:', loadedCategories)
+    console.log('loaded tasks:', loadedTasks)
     setCategories(loadedCategories)
     setTasks(loadedTasks)
   }
