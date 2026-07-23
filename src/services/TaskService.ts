@@ -20,12 +20,12 @@ export class TaskService implements ITaskService {
     return taskArgsArray.sort((a, b) => a.deadline.getTime() - b.deadline.getTime());
   }
 
-  private filterTaskByCategory(taskArray: ITask[], category: Category): ITask[] {
-    return taskArray.filter(task => task.categories.some(cat => cat.id === category.id));
+  private filterTaskByCategories(taskArray: ITask[], categories: Category[]): ITask[] {
+    return taskArray.filter(task => task.categories.some(cat => categories.some(c => c.id === cat.id)));
   }
 
-  private filterTaskArgsByCategory(taskArgsArray: TaskArgs[], category: Category): TaskArgs[] {
-    return taskArgsArray.filter(taskArg => taskArg.categories.some(cat => cat.id === category.id));
+  private filterTaskArgsByCategories(taskArgsArray: TaskArgs[], categories: Category[]): TaskArgs[] {
+    return taskArgsArray.filter(taskArgs => taskArgs.categories.some(cat => categories.some(c => c.id === cat.id)));
   }
 
   private filterTaskArgsByStatus(taskArgsArray: TaskArgs[], status: 'uncompleted' | 'completed' | 'deadline-passed'): TaskArgs[] {
@@ -48,16 +48,16 @@ export class TaskService implements ITaskService {
     return this.taskRepository.getTaskArgsById(id);
   }
 
-  async getTasksByCategory(category: Category): Promise<ITask[]> {
+  async getTasksByCategories(categories: Category[]): Promise<ITask[]> {
     const allTasks = await this.taskRepository.getAllTasks();
 
-    return this.filterTaskByCategory(allTasks, category);
+    return this.filterTaskByCategories(allTasks, categories);
   }
 
-  async getTaskArgsByCategory(category: Category): Promise<TaskArgs[]> {
+  async getTaskArgsByCategories(categories: Category[]): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return this.sortTaskArgsByDeadline(this.filterTaskArgsByCategory(allTaskArgs, category));
+    return this.sortTaskArgsByDeadline(this.filterTaskArgsByCategories(allTaskArgs, categories));
   }
 
   async getTaskArgsByStatus(status: 'uncompleted' | 'completed' | 'deadline-passed'): Promise<TaskArgs[]> {
@@ -66,10 +66,10 @@ export class TaskService implements ITaskService {
     return this.sortTaskArgsByDeadline(this.filterTaskArgsByStatus(allTaskArgs, status));
   }
 
-  async getTaskArgsByCategoryAndStatus(category: Category, status: 'uncompleted' | 'completed' | 'deadline-passed'): Promise<TaskArgs[]> {
+  async getTaskArgsByCategoriesAndStatus(categories: Category[], status: 'uncompleted' | 'completed' | 'deadline-passed'): Promise<TaskArgs[]> {
     const allTaskArgs = await this.taskRepository.getAllTaskArgs();
 
-    return this.sortTaskArgsByDeadline(this.filterTaskArgsByCategory(this.filterTaskArgsByStatus(allTaskArgs, status), category)); // ByCategoryとByStatusの合わせ技
+    return this.sortTaskArgsByDeadline(this.filterTaskArgsByCategories(this.filterTaskArgsByStatus(allTaskArgs, status), categories)); // ByCategoriesとByStatusの合わせ技
   }
 
   async createTask(args: TaskArgs): Promise<void> {
