@@ -4,23 +4,30 @@ import './TaskCard.css';
 type TaskCardProps = {
   title: string;
   deadline: string;
-  categoryColor: string; // カテゴリーに基づく色
-  statusColor: string;  // カード全体の背景色
-
-  //ここにserviceの関数をいれるpropsがはいる
+  categoryColor: string;
+  statusColor: string;
+  isSelected?: boolean;
+  onSelect?: () => void;
+  type?: 'normal' | 'habit';
+  intervalDays?: number; // 習慣タスクの場合のみ使用
 };
 
-const TaskCard: React.FC<TaskCardProps> = ({ title, deadline, categoryColor, statusColor }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ title, deadline, categoryColor, statusColor, isSelected = false, onSelect, type, intervalDays }) => {
   return (
-    <div className="task-card" style={{ backgroundColor: statusColor }}>
-      {/* カテゴリー色を反映したアイコン */}
-      {/* カテゴリー色は先頭のものだけ表示*/}
-      <div className="task-icon" style={{ backgroundColor: categoryColor }}></div>
+    <button
+      type="button"
+      className={`task-card ${isSelected ? 'selected' : ''}`}
+      style={{ backgroundColor: statusColor }}
+      onClick={onSelect}
+    >
+      <div className="task-icon" style={{ backgroundColor: categoryColor }}>
+        
+      </div>
       <div className="task-content">
         <div className="taskcard-title">{title}</div>
-        <div className="task-dueDate">{deadline}</div>
+        <div className="task-dueDate">{deadline + (type === 'habit' ? '🔄' + intervalDays + '日' : '')}</div>
       </div>
-    </div>
+    </button>
   );
 };
 

@@ -1,6 +1,7 @@
 import type { INormalTask } from './INormalTask';
 import type { TaskArgs } from './TaskArgs';
-import type { Category } from './Category';
+import { Category } from './Category';
+import type { NormalTaskDTO } from './NormalTaskDTO';
 
 export class NormalTask implements INormalTask {
   public readonly id: string;
@@ -62,7 +63,12 @@ export class NormalTask implements INormalTask {
    * タスクの完了状態を取り消し、完了日時をリセットする
    */
   uncomplete(): void {
-    this.status = 'uncompleted';
+    if (this.isDeadlinePassed()) {
+      this.status = 'deadline-passed';
+    } else {
+      this.status = 'uncompleted';
+    }
+    
     this.completedAt = null;
   }
 
@@ -82,6 +88,18 @@ export class NormalTask implements INormalTask {
     return this.deadline.getTime() < Date.now();
   }
 
+  /**
+   * タスクが30日以上期限切れかどうかを判定し、削除すべきかどうかを判定する
+   */
+  isOld(): boolean {
+    const now = Date.now();
+    const deadlineTime = this.deadline.getTime();
+    const timeDiff = now - deadlineTime;
+    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+    return daysDiff > 30;
+  }
+
   clone(): NormalTask {
     return new NormalTask({
       id: this.id,
@@ -93,5 +111,34 @@ export class NormalTask implements INormalTask {
       deadline: new Date(this.deadline),
       completedAt: this.completedAt ? new Date(this.completedAt) : null,
     });
+  }
+
+  static fromDTO(obj: NormalTaskDTO): NormalTask {
+    return new NormalTask({
+      id: obj.id,
+      type: 'normal',
+      title: obj.title,
+      description: obj.description,
+      categories: obj.categories.map((cat: any) => new Category(cat.id, cat.name, cat.color)),
+      status: obj.status,
+      deadline: new Date(obj.deadline),
+      completedAt: obj.completedAt ? new Date(obj.completedAt) : null,
+    });
+  }
+
+  toDTO(): NormalTaskDTO {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      categories: this.categories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        color: cat.color
+      })),
+      status: this.status,
+      deadline: new Date(this.deadline),
+      completedAt: this.completedAt ? new Date(this.completedAt) : null,
+    };
   }
 }

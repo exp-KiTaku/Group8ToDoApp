@@ -13,15 +13,8 @@ type CategoryDropDownListProps = {
   onOpenTaskEdit?: () => void
   showTaskEditButton?: boolean
   showAllOption?: boolean
-  onEditCategory?: (categoryId: string) => void
-  onDeleteCategory?: (categoryId: string) => void
 }
 
-type ContextMenuState = {
-  x: number
-  y: number
-  category: Category
-} | null
 
 const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
   categories: categoriesProp,
@@ -31,15 +24,9 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
   onOpenTaskEdit,
   showTaskEditButton = true,
   showAllOption = true,
-  onEditCategory,
-  onDeleteCategory,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  //右クリックメニューの状態
-  const [contextMenu, setContextMenu] = useState<ContextMenuState>(null)
-
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const contextMenuRef = useRef<HTMLDivElement>(null)
   const categories = categoriesProp ?? []
   const dropdownCategories = showAllOption
     ? [CATEGORY_ALL, ...categories]
@@ -47,12 +34,8 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log('handleClickOutside called')
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false)
-      }
-      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target as Node)) {
-        setContextMenu(null)
       }
     }
 
@@ -81,21 +64,6 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
 
     onSelectionChange?.(nextSelection.length === 0 ? [CATEGORY_ID_ALL] : nextSelection)
   }
-
-  const handleContextMenu = (e: React.MouseEvent, cat: Category) => {
-    // 全体（全て）カテゴリーに対してはメニューを出したくない場合はここでスキップ
-    if (cat.id === CATEGORY_ID_ALL) return
-
-    e.preventDefault() // ブラウザ標準の右クリックメニューを抑制
-    e.stopPropagation()
-
-    setContextMenu({
-      x: e.clientX,
-      y: e.clientY,
-      category: cat,
-    })
-  }
-  
 
   const handleOpenEdit = () => {
     onOpenEdit()
@@ -132,12 +100,10 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
                     key={cat.id}
                     className={`item ${isSelected ? 'selected' : ''}`}
                     onClick={() => handleSelect(cat.id)}
-                    onContextMenu={(e) => handleContextMenu(e, cat)}
                   >
                     <span className="dot" style={{ backgroundColor: cat.color }}></span>
                     <span className="item-label">{cat.name}</span>
-                    {isSelected && <span className="check-mark">✓</span>
-                    }
+                    {isSelected && <span className="check-mark">✓</span>}
                   </button>
                 )
               })}
@@ -149,44 +115,8 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
           </div>
         </div>
       )}
-
-      {contextMenu && (
-        <div
-          className="context-menu"
-          ref={contextMenuRef}
-          style={{
-            position: 'fixed',
-            top: `${contextMenu.y}px`,
-            left: `${contextMenu.x}px`,
-          }}
-        >
-          {/*
-          <button
-            type="button"
-            onClick={() => {
-              onEditCategory?.(contextMenu.category.id)
-              setContextMenu(null)
-            }}
-          >
-            編集
-          </button>
-          */}
-          <button
-            type="button"
-            className="danger"
-            onClick={() => {
-              onDeleteCategory?.(contextMenu.category.id)
-              setContextMenu(null)
-            }}
-          >
-            削除
-          </button>
-        </div>
-      )}
     </div>
   )
 }
-
-
 
 export default CategoryDropDownList

@@ -14,6 +14,8 @@ export interface ITaskService {
   createTask(args: TaskArgs): Promise<void>;
   updateTask(args: TaskArgs): Promise<void>; // 変更するタスクのIDを含むTaskArgsを渡す
   deleteTask(id: string): Promise<void>;
+  updateAllTaskStatuses(): Promise<void>; // 全タスクのステータスを更新する
+  deleteOldTasks(): Promise<void>; // 30日以上期限切れのタスクを削除する
   completeTask(id: string): Promise<void>; // 通常タスクは普通にID, 習慣タスクは子タスクのIDを指定
   uncompleteTask(id: string): Promise<void>; // 通常タスクは普通にID, 習慣タスクは子タスクのIDを指定
   skipHabitTask(id: string): Promise<void>; // 習慣タスクの親IDを指定

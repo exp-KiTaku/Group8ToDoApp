@@ -1,3 +1,5 @@
+import type { CategoryDTO } from './CategoryDTO';
+
 export class Category {
   public readonly id: string;
   public name: string;
@@ -19,5 +21,17 @@ export class Category {
 
   setColor(color: string): void {
     this.color = color;
+  }
+
+  static fromDTO(obj: CategoryDTO): Category {
+    return new Category(obj.id, obj.name, obj.color);
+  }
+
+  toDTO(): CategoryDTO {
+    return {
+      id: this.id,
+      name: this.name,
+      color: this.color,
+    };
   }
 }

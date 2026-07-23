@@ -104,7 +104,56 @@ export class TaskService implements ITaskService {
   }
 
   async deleteTask(id: string): Promise<void> {
-    await this.taskRepository.deleteTask(id);
+    // 習慣タスクの子タスクのIDが指定された場合は、親タスクのIDを取得して削除する
+    const task = await this.taskRepository.getTaskById(id);
+    if (!task) {
+      return; // ID一致するTaskがなかった場合は何も起きない
+    }
+
+    await this.taskRepository.deleteTask(task.id);
+  }
+
+async updateAllTaskStatuses(): Promise<void> {
+  const allTasks = await this.taskRepository.getAllTasks();
+
+  for (const task of allTasks) {
+    if (task instanceof HabitTask) {
+      task.updateAllStatus(); // 習慣タスクは全子タスクをまとめて更新
+    } else {
+      task.updateStatus();    // 通常タスクは引数なしでOK
+    }
+
+    if (task instanceof HabitTask && task.isDeadlinePassed(task.habitId.at(-1)!)) {
+      // 末尾の子タスクが期限切れの場合は、新しい子タスクを追加する
+      const newHabitId = crypto.randomUUID();
+      task.append(newHabitId);
+    }
+
+    await this.taskRepository.updateTask(task);
+  }
+}
+
+  async deleteOldTasks(): Promise<void> {
+    const allTasks = await this.taskRepository.getAllTasks();
+
+    for (const task of allTasks) {
+
+      if (task instanceof NormalTask && task.isOld()) {
+        // 通常タスクが30日以上期限切れの場合は削除する
+        await this.taskRepository.deleteTask(task.id);
+
+        continue; // 削除した場合は次のタスクへ
+      } else if (task instanceof HabitTask) {
+        // 習慣タスクの子タスクが30日以上期限切れの場合は削除する
+        const habitIdsToRemove = task.habitId.filter(habitId => task.isOld(habitId));
+
+        for (const habitId of habitIdsToRemove) {
+          task.remove(habitId);
+        }
+
+        await this.taskRepository.updateTask(task);
+      }
+    }
   }
 
   async completeTask(id: string): Promise<void> {
@@ -115,7 +164,8 @@ export class TaskService implements ITaskService {
 
     if (task instanceof HabitTask) {
       // idが親タスクを指定していないか確認する
-      if (!task.habitId.includes(id)) {
+      if (task.id === id) {
+        console.log('指定されたIDは習慣タスクの子タスクではありません。');
         return;
       }
 
@@ -143,7 +193,8 @@ export class TaskService implements ITaskService {
 
     if (task instanceof HabitTask) {
       // idが親タスクを指定していないか確認する
-      if (!task.habitId.includes(id)) {
+      if (task.id === id) {
+        console.log('指定されたIDは習慣タスクの子タスクではありません。');
         return;
       }
 
@@ -167,8 +218,8 @@ export class TaskService implements ITaskService {
     const lastHabitId = task.habitId.at(-1);
     const newHabitId = crypto.randomUUID();
 
-    task.remove(lastHabitId!);
     task.append(newHabitId);
+    task.remove(lastHabitId!);
 
     await this.taskRepository.updateTask(task);
   }
