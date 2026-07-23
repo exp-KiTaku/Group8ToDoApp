@@ -104,7 +104,13 @@ export class TaskService implements ITaskService {
   }
 
   async deleteTask(id: string): Promise<void> {
-    await this.taskRepository.deleteTask(id);
+    // 習慣タスクの子タスクのIDが指定された場合は、親タスクのIDを取得して削除する
+    const task = await this.taskRepository.getTaskById(id);
+    if (!task) {
+      return; // ID一致するTaskがなかった場合は何も起きない
+    }
+
+    await this.taskRepository.deleteTask(task.id);
   }
 
   async updateAllTaskStatuses(): Promise<void> {
@@ -118,7 +124,7 @@ export class TaskService implements ITaskService {
         const newHabitId = crypto.randomUUID();
         task.append(newHabitId);
       }
-      
+
       await this.taskRepository.updateTask(task);
     }
   }
