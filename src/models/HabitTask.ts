@@ -1,6 +1,7 @@
 import type { IHabitTask } from './IHabitTask';
 import type { TaskArgs } from './TaskArgs';
-import type { Category } from './Category';
+import { Category } from './Category';
+import type { HabitTaskDTO } from './HabitTaskDTO';
 
 export class HabitTask implements IHabitTask {
   public readonly id: string;
@@ -206,4 +207,47 @@ export class HabitTask implements IHabitTask {
     return copy;
   }
 
+  static fromDTO(obj: HabitTaskDTO): HabitTask {
+    const habitTask = new HabitTask(
+      {
+        id: obj.id,
+        type: "habit",
+        title: obj.title,
+        description: obj.description,
+        categories: obj.categories.map((cat: any) => new Category(cat.id, cat.name, cat.color)),
+        status: obj.status[0],
+        deadline: new Date(obj.deadline[0]),
+        completedAt: obj.completedAt[0] ? new Date(obj.completedAt[0]) : null,
+        intervalDays: obj.intervalDays,
+      },
+      obj.habitId[0]
+    );
+
+    habitTask.habitId = [...obj.habitId];
+    habitTask.status = [...obj.status];
+    habitTask.deadline = obj.deadline.map((d: any) => new Date(d));
+    habitTask.completedAt = obj.completedAt.map((d: any) =>
+      d ? new Date(d) : null
+    );
+
+    return habitTask;
+  }
+
+  toDTO(): HabitTaskDTO {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      categories: this.categories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        color: cat.color
+      })),
+      habitId: [...this.habitId],
+      status: [...this.status],
+      deadline: this.deadline.map(d => new Date(d)),
+      completedAt: this.completedAt.map(d => d ? new Date(d) : null),
+      intervalDays: this.intervalDays,
+    };
+  }
 }
