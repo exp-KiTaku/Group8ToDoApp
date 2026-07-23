@@ -1,6 +1,7 @@
 import type { INormalTask } from './INormalTask';
 import type { TaskArgs } from './TaskArgs';
-import type { Category } from './Category';
+import { Category } from './Category';
+import type { NormalTaskDTO } from './NormalTaskDTO';
 
 export class NormalTask implements INormalTask {
   public readonly id: string;
@@ -93,5 +94,34 @@ export class NormalTask implements INormalTask {
       deadline: new Date(this.deadline),
       completedAt: this.completedAt ? new Date(this.completedAt) : null,
     });
+  }
+
+  static fromDTO(obj: NormalTaskDTO): NormalTask {
+    return new NormalTask({
+      id: obj.id,
+      type: 'normal',
+      title: obj.title,
+      description: obj.description,
+      categories: obj.categories.map((cat: any) => new Category(cat.id, cat.name, cat.color)),
+      status: obj.status,
+      deadline: new Date(obj.deadline),
+      completedAt: obj.completedAt ? new Date(obj.completedAt) : null,
+    });
+  }
+
+  toDTO(): NormalTaskDTO {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      categories: this.categories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        color: cat.color
+      })),
+      status: this.status,
+      deadline: new Date(this.deadline),
+      completedAt: this.completedAt ? new Date(this.completedAt) : null,
+    };
   }
 }
