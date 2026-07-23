@@ -12,4 +12,6 @@ export interface INormalTask extends ITask {
   uncomplete(): void;
   updateStatus(): void;
   isDeadlinePassed(): boolean;
+  
+  clone(): INormalTask;
 }

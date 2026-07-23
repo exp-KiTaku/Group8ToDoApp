@@ -17,6 +17,6 @@ export interface IHabitTask extends ITask {
   updateStatus(habitId: string): void;
   append(newHabitId: string): void; // 末尾に子タスクを追加する（IDはService側で生成して渡す）
   remove(habitId: string): void;
-
   isDeadlinePassed(habitId: string): boolean;
+  clone(): IHabitTask;
 }
