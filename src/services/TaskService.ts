@@ -107,6 +107,22 @@ export class TaskService implements ITaskService {
     await this.taskRepository.deleteTask(id);
   }
 
+  async updateAllTaskStatuses(): Promise<void> {
+    const allTasks = await this.taskRepository.getAllTasks();
+
+    for (const task of allTasks) {
+      task.updateStatus();
+
+      if (task instanceof HabitTask && task.isDeadlinePassed(task.habitId.at(-1)!)) {
+        // 末尾の子タスクが期限切れの場合は、新しい子タスクを追加する
+        const newHabitId = crypto.randomUUID();
+        task.append(newHabitId);
+      }
+      
+      await this.taskRepository.updateTask(task);
+    }
+  }
+
   async completeTask(id: string): Promise<void> {
     const task = await this.taskRepository.getTaskById(id); // 通常タスクの場合は単にID, 習慣タスクの場合は子タスクのIDを指定 (親が返ってくる)
     if (!task) {
