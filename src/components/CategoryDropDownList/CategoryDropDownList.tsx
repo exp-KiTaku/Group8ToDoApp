@@ -14,7 +14,8 @@ type CategoryDropDownListProps = {
   showTaskEditButton?: boolean
   showAllOption?: boolean
   onEditCategory?: (categoryId: string) => void
-  onDeleteCategory?: (categoryId: string) => void
+  onDeleteCategory?: (categoryId: string) => void | Promise<void>
+  isCategoryUsed?: (categoryId: string) => Promise<boolean>
 }
 
 type ContextMenuState = {
@@ -33,10 +34,12 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
   showAllOption = true,
   onEditCategory,
   onDeleteCategory,
+  isCategoryUsed,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   //右クリックメニューの状態
   const [contextMenu, setContextMenu] = useState<ContextMenuState>(null)
+  const [contextMenuError, setContextMenuError] = useState<string | null>(null)
 
   const dropdownRef = useRef<HTMLDivElement>(null)
   const contextMenuRef = useRef<HTMLDivElement>(null)
@@ -53,6 +56,7 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
       }
       if (contextMenuRef.current && !contextMenuRef.current.contains(event.target as Node)) {
         setContextMenu(null)
+        setContextMenuError(null)
       }
     }
 
@@ -94,6 +98,7 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
       y: e.clientY,
       category: cat,
     })
+    setContextMenuError(null)
   }
   
 
@@ -174,13 +179,26 @@ const CategoryDropDownList: React.FC<CategoryDropDownListProps> = ({
           <button
             type="button"
             className="danger"
-            onClick={() => {
-              onDeleteCategory?.(contextMenu.category.id)
-              setContextMenu(null)
+            onClick={async () => {
+              const categoryId = contextMenu.category.id
+
+              try {
+                if (isCategoryUsed && (await isCategoryUsed(categoryId))) {
+                  setContextMenuError('このカテゴリーは使用中のため削除できません。')
+                  return
+                }
+
+                await onDeleteCategory?.(categoryId)
+                setContextMenu(null)
+                setContextMenuError(null)
+              } catch {
+                setContextMenuError('カテゴリーの削除に失敗しました。')
+              }
             }}
           >
             削除
           </button>
+          {contextMenuError && <div className="context-menu-error">{contextMenuError}</div>}
         </div>
       )}
     </div>

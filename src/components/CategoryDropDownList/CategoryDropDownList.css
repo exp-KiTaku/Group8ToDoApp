@@ -123,6 +123,13 @@
   min-width: 100px;
 }
 
+.context-menu-error {
+  color: #ff7b7b;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 6px 16px 10px;
+}
+
 .context-menu button {
   background: none;
   border: none;
