@@ -131,6 +131,7 @@ function App() {
                 console.log(`Deleting category with ID: ${categoryId}`)
                 handleDeleteCategory(categoryId)
               }}
+              isCategoryUsed={(categoryId) => categoryService.isCategoryUsed(categoryId)}
             />
           </div>
 
